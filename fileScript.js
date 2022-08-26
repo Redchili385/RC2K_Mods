@@ -21,6 +21,10 @@ function loadData(arrayBuffer, fileName){
 
 function writeAndDownloadArcadeState(){
   const dict = dictDiv.getDict()
+  return downloadArcadeState(dict)
+}
+
+function downloadArcadeState(dict){
   rallyData.setArcadeTimes(dict)
   button = document.getElementById("downloadButton");
   const array = rallyData.array;
