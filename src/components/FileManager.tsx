@@ -61,7 +61,7 @@ export default function FileManager(){
             <Tabs defaultValue={0}>
                 <TabsList className="inline-block bg-gray-100 rounded-lg border-2 border-blue-100">
                     {["Basic Mods", "Arcade Base Times"].map((value, index) => 
-                        <Tab value={index} className="text-lg font-bold bg-gray-200 mx-2 border-4 border-solid rounded-lg px-2 aria-selected:border-blue-600">
+                        <Tab value={index} key={index} className="text-lg font-bold bg-gray-200 mx-2 border-4 border-solid rounded-lg px-2 aria-selected:border-blue-600">
                             {value}
                         </Tab>
                     )}
