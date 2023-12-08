@@ -1,6 +1,8 @@
 "use client"
 import { ChangeEvent, useEffect, useState } from "react"
 import { ArcadeBaseTimes } from "./ArcadeBaseTimes";
+import { Tab, TabPanel, Tabs, TabsList } from "@mui/base";
+import BasicMods from "./BasicMods";
 
 export default function FileManager(){
 
@@ -51,13 +53,30 @@ export default function FileManager(){
   
     return (<>
         <input type="file" onChange={onSelectedFilesChange}/>
-        <br/>
-        { fileBytes && 
-            <span className="inline-block border border-black">
-                <ArcadeBaseTimes fileBytes={fileBytes} updateFileBytes={setFileBytes}/>
-            </span>
+        {fileBytes && fileBytes.byteLength != 5694976 && 
+            <span className="font-bold text-red-600">RC2K Patch 6 required on this website.</span>
         }
         <br/>
+        { fileBytes && fileBytes.byteLength == 5694976 &&
+            <Tabs defaultValue={0}>
+                <TabsList className="inline-block bg-gray-100 rounded-lg border-2 border-blue-100">
+                    {["Basic Mods", "Arcade Base Times"].map((value, index) => 
+                        <Tab value={index} className="text-lg font-bold bg-gray-200 mx-2 border-4 border-solid rounded-lg px-2 aria-selected:border-blue-600">
+                            {value}
+                        </Tab>
+                    )}
+                </TabsList>
+                <br/>
+                <span className="inline-block border border-black">
+                    <TabPanel value={0}>
+                        <BasicMods fileBytes={fileBytes} updateFileBytes={setFileBytes}/>
+                    </TabPanel>
+                    <TabPanel value={1}>
+                        <ArcadeBaseTimes fileBytes={fileBytes} updateFileBytes={setFileBytes}/>
+                    </TabPanel>
+                </span>
+            </Tabs>
+        }
         { fileBytes && <button 
             id="downloadButton"
             className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" 

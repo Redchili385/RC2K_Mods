@@ -28,7 +28,7 @@ export default function ArcadeStageBaseTimes(props: ArcadeStageBaseTimeProps){
     }
 
     return (<>
-        <span className="inline-block h-full px-2">
+        <span className="inline-block box-content h-full px-2 w-36">
             {stageName}
         </span>
         {arcadeStageTimes.map((arcadeTimesStage, index) => 

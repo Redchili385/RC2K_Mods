@@ -26,10 +26,6 @@ export function ArcadeBaseTimes(props: ArcadeBaseTimeProps){
     }
   
     return (<>
-        <span className="text-lg font-bold">
-            Arcade Base Times
-        </span>
-        <br/>
         {arcadeTimesStages.map((arcadeTimesStage, index) =>
             <>
                 <span className="inline-block box-content bg-blue-800 h-7 text-white font-bold p-0.5 my-0.5">
@@ -44,6 +40,5 @@ export function ArcadeBaseTimes(props: ArcadeBaseTimeProps){
                 <br/>
             </>
         )}
-        <br></br>
     </>)
 }
