@@ -1,4 +1,4 @@
-import { BasicMod } from "@/core/basic-mod/BasicMod"
+import { BasicMod } from "@/core/entity/BasicMod"
 import { useState } from "react"
 
 interface UIBasicModProps{

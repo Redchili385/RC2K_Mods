@@ -1,18 +1,18 @@
-import { BasicModsService } from "../service/BasicModsService";
-import { BasicMod } from "./BasicMod";
+import { BasicMod } from "../../../core/entity/BasicMod";
+import { ByteManipulator } from "../ByteManipulator";
 
-export default class RegistryFix implements BasicMod{
+export default class FastLoading implements BasicMod {
 
     private readonly getByte: (index: number) => number
     private readonly setByte: (index: number, value: number) => void
 
-    constructor(basicModsService: BasicModsService){
-        this.getByte = basicModsService.getByte
-        this.setByte = basicModsService.setByte
+    constructor(byteManipulator: ByteManipulator){
+        this.getByte = byteManipulator.getByte
+        this.setByte = byteManipulator.setByte
     }
 
     checkEnabled(): boolean{
-        if(this.getByte(0x14812) == 0xEB){
+        if(this.getByte(0x45BCF) == 0x84){
             return true;
         }
         return false;
@@ -31,11 +31,11 @@ export default class RegistryFix implements BasicMod{
     }
 
     private enable(){
-        this.setByte(0x14812, 0xEB)
+        this.setByte(0x45BCF, 0x84)
     }
 
     private disable(){
-        this.setByte(0x14812, 0x74)
+        this.setByte(0x45BCF, 0x85)
     }
     
 }

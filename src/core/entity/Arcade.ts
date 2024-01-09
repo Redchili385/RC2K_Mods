@@ -1,7 +1,5 @@
-import { Stage } from "./Stage"
-
 export interface Arcade{
-    index: number
+    id: number
     number: number
-    stages: Stage[]
+    vanillaStageIds: number[]
 }

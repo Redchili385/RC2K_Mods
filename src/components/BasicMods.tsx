@@ -1,10 +1,10 @@
-import { BasicMod } from "@/core/basic-mod/BasicMod";
-import RegistryFix from "@/core/basic-mod/RegistryFix";
+import { BasicMod } from "@/core/entity/BasicMod";
+import RegistryFix from "@/providers/basic-mod/implementation/RegistryFix";
 import UIBasicMod from "./UIBasicMod";
-import ParticleGuruFix from "@/core/basic-mod/ParticleGuruFix";
-import FastLoading from "@/core/basic-mod/FastLoading";
-import NoCD from "@/core/basic-mod/NoCD";
-import ExtendedCameraModes from "@/core/basic-mod/ExtendedCameraModes";
+import ParticleGuruFix from "@/providers/basic-mod/implementation/ParticleGuruFix";
+import FastLoading from "@/providers/basic-mod/implementation/FastLoading";
+import NoCD from "@/providers/basic-mod/implementation/NoCD";
+import ExtendedCameraModes from "@/providers/basic-mod/implementation/ExtendedCameraModes";
 
 interface BasicModsProps{
     fileBytes: ArrayBuffer,

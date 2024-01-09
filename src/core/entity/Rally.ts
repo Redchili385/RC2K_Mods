@@ -1,8 +1,5 @@
-import { Stage } from "./Stage";
-
 export interface Rally{
-    index: number,
+    id: number,  //Id = Vanilla Rally Order (0 indexed)
     name: string,
-    arcadeNumber: number,
-    stages: Stage[],
+    vanillaStageIds: number[],
 }

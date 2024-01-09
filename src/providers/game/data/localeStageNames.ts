@@ -1,4 +1,28 @@
-export const localeStageNames = `; Vauxhall Rally of Wales
+export const localeStageNames = 
+`tokCourseDescription	description
+
+tokRT_RoundOne		round one
+tokRT_RoundTwo		round two
+tokRT_RoundThree	round three
+tokRT_RoundFour		round four
+tokRT_RoundFive		round five
+tokRT_RoundSix		round six
+
+tokRT_ChampOne		vauxhall rally of wales
+tokRT_ChampTwo		pirelli international rally
+tokRT_ChampThree	rsac scottish rally
+tokRT_ChampFour		seat jim clark memorial rally
+tokRT_ChampFive		stena line ulster rally
+tokRT_ChampSix		sony manx international rally
+
+tokRT_SingleArc1	arcade level 1
+tokRT_SingleArc2	arcade level 2
+tokRT_SingleArc3	arcade level 3
+tokRT_SingleArc4	arcade level 4
+tokRT_SingleArc5	arcade level 5
+tokRT_SingleArc6	arcade level 6
+
+; Vauxhall Rally of Wales
 
 tokSS_Stage000		clocaenog mid
 tokSS_Stage001		penmachno south
