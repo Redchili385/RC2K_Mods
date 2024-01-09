@@ -1,4 +1,4 @@
-import StageService from "@/core/StageService";
+import StageService from "@/core/service/StageService";
 import { createContext } from "react";
 
 export const GameContext = createContext({

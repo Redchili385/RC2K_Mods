@@ -1,18 +1,21 @@
+import { BasicModsService } from "../service/BasicModsService";
 import { BasicMod } from "./BasicMod";
 
 export default class ParticleGuruFix implements BasicMod{
 
-    readonly exe: Uint8Array
+    private readonly getByte: (index: number) => number
+    private readonly setByte: (index: number, value: number) => void
 
-    constructor(exe: Uint8Array){
-        this.exe = exe
+    constructor(basicModsService: BasicModsService){
+        this.getByte = basicModsService.getByte
+        this.setByte = basicModsService.setByte
     }
 
     checkEnabled(): boolean{
         if(
-            this.exe[0xC9485] == 0xC3 &&
-            this.exe[0xC9486] == 0x90 && 
-            this.exe[0xC9487] == 0x90
+            this.getByte(0xC9485) == 0xC3 &&
+            this.getByte(0xC9486) == 0x90 && 
+            this.getByte(0xC9487) == 0x90
         ){
             return true;
         }
@@ -32,15 +35,15 @@ export default class ParticleGuruFix implements BasicMod{
     }
 
     private enable(){
-        this.exe[0xC9485] = 0xC3
-        this.exe[0xC9486] = 0x90
-        this.exe[0xC9487] = 0x90
+        this.setByte(0xC9485, 0xC3)
+        this.setByte(0xC9486, 0x90)
+        this.setByte(0xC9487, 0x90)
     }
 
     private disable(){
-        this.exe[0xC9485] = 0xD9
-        this.exe[0xC9486] = 0x47
-        this.exe[0xC9487] = 0x34
+        this.setByte(0xC9485, 0xD9)
+        this.setByte(0xC9486, 0x47)
+        this.setByte(0xC9487, 0x34)
     }
     
 }

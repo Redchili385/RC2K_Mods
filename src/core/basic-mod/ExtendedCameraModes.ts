@@ -1,15 +1,18 @@
+import { BasicModsService } from "../service/BasicModsService";
 import { BasicMod } from "./BasicMod";
 
 export default class ExtendedCameraModes implements BasicMod {
 
-    readonly exe: Uint8Array
+    private readonly getByte: (index: number) => number
+    private readonly setByte: (index: number, value: number) => void
 
-    constructor(exe: Uint8Array){
-        this.exe = exe
+    constructor(basicModsService: BasicModsService){
+        this.getByte = basicModsService.getByte
+        this.setByte = basicModsService.setByte
     }
 
     checkEnabled(): boolean{
-        if(this.exe[0x39E7D] == 0x34){
+        if(this.getByte(0x39E7D) == 0x34){
             return true;
         }
         return false;
@@ -28,11 +31,11 @@ export default class ExtendedCameraModes implements BasicMod {
     }
 
     private enable(){
-        this.exe[0x39E7D] = 0x34
+        this.setByte(0x39E7D, 0x34)
     }
 
     private disable(){
-        this.exe[0x39E7D] = 0x07
+        this.setByte(0x39E7D, 0x07)
     }
     
 }

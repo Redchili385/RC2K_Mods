@@ -1,15 +1,18 @@
+import { BasicModsService } from "../service/BasicModsService";
 import { BasicMod } from "./BasicMod";
 
 export default class RegistryFix implements BasicMod{
 
-    readonly exe: Uint8Array
+    private readonly getByte: (index: number) => number
+    private readonly setByte: (index: number, value: number) => void
 
-    constructor(exe: Uint8Array){
-        this.exe = exe
+    constructor(basicModsService: BasicModsService){
+        this.getByte = basicModsService.getByte
+        this.setByte = basicModsService.setByte
     }
 
     checkEnabled(): boolean{
-        if(this.exe[0x14812] == 0xEB){
+        if(this.getByte(0x14812) == 0xEB){
             return true;
         }
         return false;
@@ -28,11 +31,11 @@ export default class RegistryFix implements BasicMod{
     }
 
     private enable(){
-        this.exe[0x14812] = 0xEB
+        this.setByte(0x14812, 0xEB)
     }
 
     private disable(){
-        this.exe[0x14812] = 0x74
+        this.setByte(0x14812, 0x74)
     }
     
 }

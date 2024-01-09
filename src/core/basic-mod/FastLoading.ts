@@ -1,15 +1,18 @@
+import { BasicModsService } from "../service/BasicModsService";
 import { BasicMod } from "./BasicMod";
 
 export default class FastLoading implements BasicMod {
 
-    readonly exe: Uint8Array
+    private readonly getByte: (index: number) => number
+    private readonly setByte: (index: number, value: number) => void
 
-    constructor(exe: Uint8Array){
-        this.exe = exe
+    constructor(basicModsService: BasicModsService){
+        this.getByte = basicModsService.getByte
+        this.setByte = basicModsService.setByte
     }
 
     checkEnabled(): boolean{
-        if(this.exe[0x45BCF] == 0x84){
+        if(this.getByte(0x45BCF) == 0x84){
             return true;
         }
         return false;
@@ -28,11 +31,11 @@ export default class FastLoading implements BasicMod {
     }
 
     private enable(){
-        this.exe[0x45BCF] = 0x84
+        this.setByte(0x45BCF, 0x84)
     }
 
     private disable(){
-        this.exe[0x45BCF] = 0x85
+        this.setByte(0x45BCF, 0x85)
     }
     
 }

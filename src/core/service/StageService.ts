@@ -1,24 +1,7 @@
-import { localeStageNames } from "./data/localeStageNames";
-
-export interface Rally{
-    index: number,
-    name: string,
-    arcadeNumber: number,
-    stages: Stage[],
-}
-
-export interface Arcade{
-    index: number
-    number: number
-    stages: Stage[]
-}
-
-export interface Stage{
-    id: number,
-    championshipOrderIndex: number,
-    indexInRally: number,
-    name: string,
-}
+import { localeStageNames } from "../data/localeStageNames";
+import { Arcade } from "../entity/Arcade";
+import { Rally } from "../entity/Rally";
+import { Stage } from "../entity/Stage";
 
 export default class StageService{
 
