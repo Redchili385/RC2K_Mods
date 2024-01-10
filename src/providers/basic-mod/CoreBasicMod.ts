@@ -1,5 +1,4 @@
-export interface BasicMod{
-    id: string
+export interface CoreBasicMod{
     checkEnabled: () => boolean
     setEnabled: (value: boolean) => void
 }

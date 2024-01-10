@@ -1,4 +1,4 @@
-import { GameGateway } from "@/core/gateways/GameGateway";
+import { GameGateway } from "@/core/gateway/GameGateway";
 import { GameRepository } from "./GameRepository";
 
 export class GameService implements GameGateway{

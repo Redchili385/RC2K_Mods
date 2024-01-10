@@ -1,7 +1,7 @@
-import { BasicMod } from "../../../core/entity/BasicMod";
 import { ByteManipulator } from "../ByteManipulator";
+import { CoreBasicMod } from "../CoreBasicMod";
 
-export default class ExtendedCameraModes implements BasicMod {
+export default class ExtendedCameraModes implements CoreBasicMod {
 
     private readonly getByte: (index: number) => number
     private readonly setByte: (index: number, value: number) => void

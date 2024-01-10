@@ -1,4 +1,4 @@
-import { GameGateway } from "@/core/gateways/GameGateway";
+import { GameGateway } from "@/core/gateway/GameGateway";
 import { localeStageNames } from "./data/localeStageNames";
 
 export interface GameRepository {

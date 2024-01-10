@@ -1,33 +1,54 @@
 import { BasicMod } from "../../core/entity/BasicMod"
 import { ByteManipulator } from "./ByteManipulator"
+import { CoreBasicMod } from "./CoreBasicMod"
 import ExtendedCameraModes from "./implementation/ExtendedCameraModes"
 import FastLoading from "./implementation/FastLoading"
 import NoCD from "./implementation/NoCD"
 import ParticleGuruFix from "./implementation/ParticleGuruFix"
 import RegistryFix from "./implementation/RegistryFix"
-import { BasicModGateway } from "@/core/gateways/BasicModGateway"
+import { BasicModGateway } from "@/core/gateway/BasicModGateway"
 
 export class BasicModService implements BasicModGateway{
 
-    private readonly basicMods: Map<string, BasicMod>
+    private readonly coreBasicMods: Map<string, CoreBasicMod>
     private byteManipulator: ByteManipulator
 
     constructor(byteManipulator: ByteManipulator){
-        this.basicMods = new Map<string, BasicMod>();
+        this.coreBasicMods = new Map<string, BasicMod>();
         this.byteManipulator = byteManipulator
         this.fillBasicMods()
     }
 
+    getBasicModById(id: string): BasicMod | null {
+        const coreBasicMod = this.coreBasicMods.get(id)
+        if(coreBasicMod == null){
+            return null
+        }
+        return {
+            id: id,
+            checkEnabled: coreBasicMod.checkEnabled,
+            setEnabled: coreBasicMod.setEnabled
+        }
+    }
+
     getBasicMods(): BasicMod[]{
-        return Array.from(this.basicMods.values())
+        const basicMods: BasicMod[] = []
+        this.coreBasicMods.forEach((coreBasicMod, id) => {
+            basicMods.push({
+                id,
+                checkEnabled: coreBasicMod.checkEnabled,
+                setEnabled: coreBasicMod.setEnabled
+            })
+        })
+        return basicMods
     }
 
     private fillBasicMods(){
-        this.basicMods.set("No CD", new NoCD(this.byteManipulator));
-        this.basicMods.set("Registry Fix", new RegistryFix(this.byteManipulator));
-        this.basicMods.set("Particle Guru Fix", new ParticleGuruFix(this.byteManipulator));
-        this.basicMods.set("Fast Loading Screen", new FastLoading(this.byteManipulator));
-        this.basicMods.set("Extended Camera Modes", new ExtendedCameraModes(this.byteManipulator));
+        this.coreBasicMods.set("No CD", new NoCD(this.byteManipulator));
+        this.coreBasicMods.set("Registry Fix", new RegistryFix(this.byteManipulator));
+        this.coreBasicMods.set("Particle Guru Fix", new ParticleGuruFix(this.byteManipulator));
+        this.coreBasicMods.set("Fast Loading Screen", new FastLoading(this.byteManipulator));
+        this.coreBasicMods.set("Extended Camera Modes", new ExtendedCameraModes(this.byteManipulator));
     }
 
 }
