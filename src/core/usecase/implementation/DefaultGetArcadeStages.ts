@@ -17,6 +17,7 @@ export class DefaultGetArcadeStages implements GetArcadeStages{
 
     invoke(): GetArcadeStagesOutput {
         const arcades = this.arcadeGateway.getArcades()
+        console.log(arcades)
         const arcadeStageDTOs: ArcadeStageDTO[] = []
         arcades.forEach(arcade => {
             arcade.stageIds.forEach(stageId => {

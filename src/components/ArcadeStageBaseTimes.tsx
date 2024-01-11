@@ -1,44 +1,45 @@
-import { useContext } from "react"
-import { intTo3CharString } from "../util/auxiliarFunctions"
-import { GameContext } from "@/context/GameContext"
+import { useState } from "react"
+import { useCoreContext } from "@/context/CoreContext"
+import { ArcadeStageDTO } from "@/core/usecase/GetArcadeStages"
 
 interface ArcadeStageBaseTimeProps{
-    arcadeStageTimesString: string,
-    updateArcadeStageTimesString: (arcadeStageTimesString: string) => void
+    arcadeStage: ArcadeStageDTO
 }
 
 export default function ArcadeStageBaseTimes(props: ArcadeStageBaseTimeProps){
-    const {arcadeStageTimesString, updateArcadeStageTimesString } = props
-    const arcadeStageComponents = arcadeStageTimesString.split(" ")
-    const arcadeStageLevelString = arcadeStageComponents[0]
-    const stageId = parseInt(arcadeStageLevelString.slice(-2))
-    const arcadeStageTimes = arcadeStageComponents.slice(1)
-    const gameContext = useContext(GameContext)
-    const stageService = gameContext.stageService
-    const stageName = stageService.getStageById(stageId)?.name ?? ""
+    const { arcadeStage } = props
+    const { setArcadeStageBaseTimesByIds } = useCoreContext()
+    const [baseTimes, setBaseTimes] = useState<number[]>(arcadeStage.baseTimes)
+
+    const stageName = arcadeStage.name
   
-    function updateTime(timeString: string, index: number){
-        const time = parseInt(timeString)
-        if(isNaN(time) || time < 0){
+    function updateTime(index: number, newTimeString: string){
+        const newTime = parseInt(newTimeString)
+        if(isNaN(newTime) || newTime < 0){
             return;
         }
-        arcadeStageTimes[index] = intTo3CharString(time)
-        const newArcadeStageTimesString = [arcadeStageLevelString].concat(arcadeStageTimes).join(" ") 
-        updateArcadeStageTimesString(newArcadeStageTimesString)
+        const newBaseTimes = baseTimes.slice()
+        newBaseTimes[index] = newTime
+        setArcadeStageBaseTimesByIds.invoke({
+            arcadeId: arcadeStage.arcadeId,
+            stageId: arcadeStage.stageId,
+            baseTimes: newBaseTimes
+        })
+        setBaseTimes(newBaseTimes)
     }
 
     return (<>
         <span className="inline-block box-content h-full px-2 w-36">
             {stageName}
         </span>
-        {arcadeStageTimes.map((arcadeTimesStage, index) => 
+        {baseTimes.map((baseTime, index) => 
             <input
                 className="w-12 bg-green-300 border-r-4 border-l-4 border-blue-800 text-center text-black"
                 key={index} 
                 size={3}
                 type="number"
-                value={arcadeTimesStage} 
-                onChange={(e) => updateTime(e.target.value, index)} 
+                value={baseTime} 
+                onChange={(e) => updateTime(index, e.target.value)} 
             />
         )}
         <br></br>

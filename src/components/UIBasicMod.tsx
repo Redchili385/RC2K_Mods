@@ -1,32 +1,34 @@
-import { BasicMod } from "@/core/entity/BasicMod"
+import { useCoreContext } from "@/context/CoreContext";
 import { useState } from "react"
 
 interface UIBasicModProps{
-    name: string,
-    mod: BasicMod,
-    onChange: () => void
+    basicModId: string,
+    isEnabled: boolean
 }
 
 export default function UIBasicMod(props: UIBasicModProps){
-    const {name, mod, onChange} = props
-    const [enabled, setEnabled] = useState<boolean>(mod.checkEnabled())
+    const { basicModId } = props
+    const { setEnabledBasicModById } = useCoreContext()
+    const [isEnabled, setIsEnabled] = useState<boolean>(props.isEnabled)
 
     function onCheckboxClicked(newState: boolean){
-        if(enabled == newState){
+        if(isEnabled == newState){
             return;
         }
-        mod.setEnabled(newState);
-        setEnabled(newState);
-        onChange()
+        setEnabledBasicModById.invoke({
+            id: basicModId, 
+            value: newState,
+        });
+        setIsEnabled(newState)
     }
 
     return <span className="inline-block px-2">
-        <span className="inline-block font-bold w-52">{name}</span>
+        <span className="inline-block font-bold w-52">{basicModId}</span>
         <input
             className="inline-block scale-125 w-8" 
             type="checkbox" 
-            checked={enabled} 
-            onClick={e => onCheckboxClicked(e.currentTarget.checked)}>
+            checked={isEnabled} 
+            onChange={e => onCheckboxClicked(e.currentTarget.checked)}>
         </input>
     </span>
 }

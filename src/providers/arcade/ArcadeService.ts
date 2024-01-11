@@ -51,7 +51,7 @@ export class ArcadeService implements ArcadeGateway{
             return null
         }
         const vanillaFirstStageId = 10 * vanillaStageIdDividedBy10
-        return [0, 1, 2, 3, 4, 5].map(stageIndex => vanillaFirstStageId + stageIndex)
+        return [0, 1, 2, 3, 4, 5].map(stageIndex => vanillaFirstStageId + stageIndex + 1)
     }
 
     private getArcadeTimesSourceString(): string {
@@ -78,7 +78,7 @@ export class ArcadeService implements ArcadeGateway{
     private getArcadeStageTimesSourceStringByStageId(stageId: number): string {
         const arcadeTimesSourceString = this.getArcadeTimesSourceString()
         const arcadeStageTimesSourceStringStartIndex = arcadeTimesSourceString.indexOf(`L${stageId}`)
-        const arcadeStageTimesSourceStringEndIndex = arcadeTimesSourceString.indexOf(`\r\n`)
+        const arcadeStageTimesSourceStringEndIndex = arcadeTimesSourceString.indexOf(`\r\n`, arcadeStageTimesSourceStringStartIndex)
         return arcadeTimesSourceString.slice(
             arcadeStageTimesSourceStringStartIndex,
             arcadeStageTimesSourceStringEndIndex

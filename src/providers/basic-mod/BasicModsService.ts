@@ -1,4 +1,6 @@
+import { BasicModNotFoundException } from "@/core/exception/BasicModNotFoundException"
 import { BasicMod } from "../../core/entity/BasicMod"
+import { GameRepository } from "../game/GameRepository"
 import { ByteManipulator } from "./ByteManipulator"
 import { CoreBasicMod } from "./CoreBasicMod"
 import ExtendedCameraModes from "./implementation/ExtendedCameraModes"
@@ -13,9 +15,12 @@ export class BasicModService implements BasicModGateway{
     private readonly coreBasicMods: Map<string, CoreBasicMod>
     private byteManipulator: ByteManipulator
 
-    constructor(byteManipulator: ByteManipulator){
-        this.coreBasicMods = new Map<string, BasicMod>();
-        this.byteManipulator = byteManipulator
+    constructor(gameRepository: GameRepository){
+        this.coreBasicMods = new Map<string, CoreBasicMod>();
+        this.byteManipulator = {
+            getByte: (index: number) => gameRepository.getByte(index),
+            setByte: (index: number, value: number) => gameRepository.setByte(index, value)
+        }
         this.fillBasicMods()
     }
 
@@ -26,9 +31,17 @@ export class BasicModService implements BasicModGateway{
         }
         return {
             id: id,
-            checkEnabled: coreBasicMod.checkEnabled,
-            setEnabled: coreBasicMod.setEnabled
+            isEnabled: coreBasicMod.checkEnabled(),
         }
+    }
+
+    setEnabledBasicModById(id: string, value: boolean): void {
+        const coreBasicMod = this.coreBasicMods.get(id);
+        if(coreBasicMod == null){
+            throw new BasicModNotFoundException();
+        }
+        coreBasicMod.setEnabled(value);
+        return;
     }
 
     getBasicMods(): BasicMod[]{
@@ -36,8 +49,7 @@ export class BasicModService implements BasicModGateway{
         this.coreBasicMods.forEach((coreBasicMod, id) => {
             basicMods.push({
                 id,
-                checkEnabled: coreBasicMod.checkEnabled,
-                setEnabled: coreBasicMod.setEnabled
+                isEnabled: coreBasicMod.checkEnabled(),
             })
         })
         return basicMods

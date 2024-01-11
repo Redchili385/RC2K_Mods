@@ -15,7 +15,7 @@ export class DefaultGetBasicMods implements GetBasicMods{
         const basicMods = this.basicModGateway.getBasicMods()
         const basicModsDTO = basicMods.map(basicMod => ({
             id: basicMod.id,
-            isEnabled: basicMod.checkEnabled()
+            isEnabled: basicMod.isEnabled
         }))
         return {
             basicMods: basicModsDTO

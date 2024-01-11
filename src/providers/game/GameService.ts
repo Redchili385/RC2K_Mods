@@ -1,7 +1,7 @@
 import { GameGateway } from "@/core/gateway/GameGateway";
 import { GameRepository } from "./GameRepository";
 
-export class GameService implements GameGateway{
+export class GameService implements GameGateway {
 
     readonly repository: GameRepository
 
