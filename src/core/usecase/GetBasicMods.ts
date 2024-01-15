@@ -1,4 +1,4 @@
-export interface BasicModDTO{
+export interface BasicModDTO {
     id: string,
     isEnabled: boolean,
 }
