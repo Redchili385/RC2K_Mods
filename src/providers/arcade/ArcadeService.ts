@@ -4,16 +4,22 @@ import { GameRepository } from "../game/GameRepository";
 import { notEmpty } from "@/util/functions/notNull";
 import { intTo3CharString, stringToUtf8ByteArray, utf8ByteArrayToString } from "@/util/auxiliarFunctions";
 
+export interface ArcadeServiceInput{
+    gameRepository: GameRepository
+    arcadeTimesSourceStartIndex: number
+    arcadeTimesSourceEndIndex: number
+}
+
 export class ArcadeService implements ArcadeGateway{
 
     readonly gameRepository: GameRepository
-    readonly arcadeTimesSourceStartIndex = 0x202BB8
-    readonly arcadeTimesSourceEndIndex = 0x2032BE
+    readonly arcadeTimesSourceStartIndex/// = 0x202BB8
+    readonly arcadeTimesSourceEndIndex //= 0x2032BE
 
-    constructor(
-        gameRepository: GameRepository
-    ){
-        this.gameRepository = gameRepository
+    constructor(input: ArcadeServiceInput){
+        this.gameRepository = input.gameRepository
+        this.arcadeTimesSourceStartIndex = input.arcadeTimesSourceStartIndex
+        this.arcadeTimesSourceEndIndex = input.arcadeTimesSourceEndIndex
     }
 
     getArcadeById(id: number): Arcade | null {
@@ -33,6 +39,9 @@ export class ArcadeService implements ArcadeGateway{
 
     getArcadeStageByIds(arcadeId: number, stageId: number): ArcadeStage | null {
         const baseTimes = this.getArcadeStageBaseTimesByStageId(stageId)
+        if(baseTimes == null){
+            return null;
+        }
         return{
             arcadeId,
             stageId,
@@ -55,30 +64,29 @@ export class ArcadeService implements ArcadeGateway{
     }
 
     private getArcadeTimesSourceString(): string {
-        const bytes = this.gameRepository.getExe()
-        const arcadeTimesBytes = bytes.subarray(
-            this.arcadeTimesSourceStartIndex, 
-            this.arcadeTimesSourceEndIndex,
+        return this.gameRepository.getStringFromExe(
+            this.arcadeTimesSourceStartIndex,
+            this.arcadeTimesSourceEndIndex - this.arcadeTimesSourceStartIndex
         )
-        return utf8ByteArrayToString(arcadeTimesBytes)
     }
 
     private setArcadeTimesSourceString(arcadeTimesSourceString: string){
-        const bytes = this.gameRepository.getExe()
-        const arcadeTimesBytes = bytes.subarray(
-            this.arcadeTimesSourceStartIndex, 
-            this.arcadeTimesSourceEndIndex,
+        this.gameRepository.setStringOnExe(
+            this.arcadeTimesSourceStartIndex,
+            arcadeTimesSourceString
         )
-        const newArcadeTimesBytes = stringToUtf8ByteArray(arcadeTimesSourceString)
-        newArcadeTimesBytes.forEach((newArcadeTimeByte, index) => {
-            arcadeTimesBytes[index] = newArcadeTimeByte
-        })
     }
 
-    private getArcadeStageTimesSourceStringByStageId(stageId: number): string {
+    private getArcadeStageTimesSourceStringByStageId(stageId: number): string | null {
         const arcadeTimesSourceString = this.getArcadeTimesSourceString()
         const arcadeStageTimesSourceStringStartIndex = arcadeTimesSourceString.indexOf(`L${stageId}`)
-        const arcadeStageTimesSourceStringEndIndex = arcadeTimesSourceString.indexOf(`\r\n`, arcadeStageTimesSourceStringStartIndex)
+        if(arcadeStageTimesSourceStringStartIndex == -1){
+            return null;
+        }
+        const nextNewLineIndex = arcadeTimesSourceString.indexOf(`\r\n`, arcadeStageTimesSourceStringStartIndex)
+        const arcadeStageTimesSourceStringEndIndex = nextNewLineIndex == -1 
+            ? arcadeTimesSourceString.length
+            : nextNewLineIndex
         return arcadeTimesSourceString.slice(
             arcadeStageTimesSourceStringStartIndex,
             arcadeStageTimesSourceStringEndIndex
@@ -92,12 +100,16 @@ export class ArcadeService implements ArcadeGateway{
             + arcadeStageTimesSourceString.length
         const newArcadeTimesSourceString = arcadeTimesSourceString.slice(0, arcadeStageTimesSourceStringStartIndex) 
             + arcadeStageTimesSourceString
-            + arcadeTimesSourceString.slice(0, arcadeStageTimesSourceStringEndIndex);
+            + arcadeTimesSourceString.slice(arcadeStageTimesSourceStringEndIndex);
         this.setArcadeTimesSourceString(newArcadeTimesSourceString)
     }
 
-    private getArcadeStageBaseTimesByStageId(stageId: number): number[]{
-        return this.getArcadeStageTimesSourceStringByStageId(stageId)
+    private getArcadeStageBaseTimesByStageId(stageId: number): number[] | null{
+        const arcadeStageTimesSourceString = this.getArcadeStageTimesSourceStringByStageId(stageId)
+        if(arcadeStageTimesSourceString == null){
+            return null
+        }
+        return arcadeStageTimesSourceString
             .split(" ")
             .slice(1)
             .map(stringTime => parseInt(stringTime))

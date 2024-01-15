@@ -1,20 +1,23 @@
-import { GameGateway } from "@/core/gateway/GameGateway";
-import { localeStageNames } from "./data/localeStageNames";
+import { stringToUtf8ByteArray, utf8ByteArrayToString } from "@/util/auxiliarFunctions"
 
 export interface GameRepository {
     getExe(): Uint8Array
     setExe(exe: Uint8Array): void
     getByte(index: number): number
     setByte(index: number, value: number): void
+    getStringFromExe(index: number, maxLength: number): string
+    setStringOnExe(index: number, string: string): void 
     getLocaleValueByToken(token: string): string | null
 }
 
-export class DefaultGameRepository implements GameGateway {
+export class DefaultGameRepository implements GameRepository {
 
     exe: Uint8Array;
+    localeStageNames: string
 
-    constructor(initialExe: Uint8Array){
+    constructor(initialExe: Uint8Array, localeStageNames: string){
         this.exe = initialExe
+        this.localeStageNames = localeStageNames
     }
 
     getExe(): Uint8Array {
@@ -32,14 +35,29 @@ export class DefaultGameRepository implements GameGateway {
         this.exe[index] = value
     };
 
+    getStringFromExe(index: number, length: number): string {
+        const slicedExe = this.exe.subarray(index, index + length)
+        return utf8ByteArrayToString(slicedExe)
+    }
+    setStringOnExe(index: number, string: string): void {
+        const stringBytes = stringToUtf8ByteArray(string);
+        const maximumStringBytesLength = this.exe.length - index
+        this.exe.set(stringBytes.slice(0, maximumStringBytesLength), index)
+    }
+
     getLocaleValueByToken(token: string): string | null{
-        const tokenIndex = localeStageNames.indexOf(token)
+        const tokenIndex = this.localeStageNames.indexOf(token)
         if(tokenIndex == -1){
             return null
         }
-        const valueStartIndex = tokenIndex + token.length + 2
-        const valueEndIndex = localeStageNames.indexOf("\n", valueStartIndex)
-        return localeStageNames.slice(valueStartIndex, valueEndIndex)
+        const nextNewLineIndex = this.localeStageNames.indexOf("\n", tokenIndex)
+        const valueEndIndex = nextNewLineIndex == -1 ? this.localeStageNames.length : nextNewLineIndex
+        const keyValueString = this.localeStageNames.slice(tokenIndex, valueEndIndex)
+        const keyValueArr = keyValueString.match(/(\w+)\s+(.+)/)
+        if(keyValueArr == null){
+            return null
+        }
+        return keyValueArr[2]
     }
 
 }

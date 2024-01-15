@@ -12,6 +12,7 @@ import { ByteManipulator } from "@/providers/basic-mod/ByteManipulator";
 import { DefaultSetEnabledBasicModById } from "@/core/usecase/implementation/DefaultSetEnabledBasicModById";
 import { DefaultGetArcadeStages } from "@/core/usecase/implementation/DefaultGetArcadeStages";
 import { DefaultSetArcadeStageBaseTimesByIds } from "@/core/usecase/implementation/DefaultSetArcadeStageBaseTimesByIds";
+import { localeStageNames } from "@/providers/game/data/localeStageNames";
 
 export class DefaultUseCaseFactory implements UseCaseFactory {
 
@@ -22,13 +23,17 @@ export class DefaultUseCaseFactory implements UseCaseFactory {
     }
 
     create(): UseCaseFactoryOutput {
-        const gameRepository = new DefaultGameRepository(this.initialExe)
+        const gameRepository = new DefaultGameRepository(this.initialExe, localeStageNames)
 
         const gameGateway = new GameService(gameRepository)
         const basicModGateway = new BasicModService(gameRepository)
         const stageGateway = new StageService(gameRepository)
         const rallyGateway = new RallyService(gameRepository)
-        const arcadeGateway = new ArcadeService(gameRepository)
+        const arcadeGateway = new ArcadeService({
+            gameRepository,
+            arcadeTimesSourceStartIndex: 0x202BB8,
+            arcadeTimesSourceEndIndex: 0x2032BE
+        })
 
         const getExe = new DefaultGetExe(gameGateway)
         const setExe = new DefaultSetExe(gameGateway)

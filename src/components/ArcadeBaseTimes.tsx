@@ -5,7 +5,6 @@ import React from "react"
 export function ArcadeBaseTimes(){
     const { getArcadeStages } = useCoreContext()
     const arcadeStages = getArcadeStages.invoke().arcadeStages
-    console.log(arcadeStages)
   
     return (<>
         {arcadeStages.map((arcadeStage, index) =>
