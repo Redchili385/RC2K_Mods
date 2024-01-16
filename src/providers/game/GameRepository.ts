@@ -1,9 +1,9 @@
-import { stringToUtf8ByteArray, utf8ByteArrayToString } from "@/util/auxiliarFunctions"
+import { captureFirstGroup, stringToUtf8ByteArray, utf8ByteArrayToString } from "@/util/auxiliarFunctions"
 
 export interface GameRepository {
     getExe(): Uint8Array
     setExe(exe: Uint8Array): void
-    getByte(index: number): number
+    getByte(index: number): number | null
     setByte(index: number, value: number): void
     getStringFromExe(index: number, maxLength: number): string
     setStringOnExe(index: number, string: string): void 
@@ -27,8 +27,8 @@ export class DefaultGameRepository implements GameRepository {
         this.exe = exe
     }
 
-    getByte(index: number): number {
-        return this.exe[index]
+    getByte(index: number): number | null {
+        return this.exe[index] ?? null
     };
 
     setByte(index: number, value: number): void {
@@ -53,11 +53,11 @@ export class DefaultGameRepository implements GameRepository {
         const nextNewLineIndex = this.localeStageNames.indexOf("\n", tokenIndex)
         const valueEndIndex = nextNewLineIndex == -1 ? this.localeStageNames.length : nextNewLineIndex
         const keyValueString = this.localeStageNames.slice(tokenIndex, valueEndIndex)
-        const keyValueArr = keyValueString.match(/(\w+)\s+(.+)/)
-        if(keyValueArr == null){
+        const value = captureFirstGroup(RegExp(/\w+\s+(.+)/), keyValueString)
+        if(value == null){
             return null
         }
-        return keyValueArr[2]
+        return value
     }
 
 }

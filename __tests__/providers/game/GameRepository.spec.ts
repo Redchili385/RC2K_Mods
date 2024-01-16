@@ -49,6 +49,18 @@ describe("GameRepository", () => {
             //Then
             expect(byte).toStrictEqual(3)
         })
+
+        it("should return null if the index is out of bounds of the exe", () => {
+            //Given
+            const exe = new Uint8Array([1,3])
+            const gameRepository: GameRepository = new DefaultGameRepository(exe, "")
+
+            //When
+            const byte = gameRepository.getByte(2)
+
+            //Then
+            expect(byte).toStrictEqual(null)
+        })
         
     })
 

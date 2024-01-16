@@ -14,41 +14,21 @@ export class StageService implements StageGateway {
     }
 
     getStages(): Stage[] {
-        const numberOfStages = 36
+        const ids = StageService.getVanillaIds()
         const stages: Stage[] = []
-        for(let localeStageNumber = 0; localeStageNumber < numberOfStages; localeStageNumber++){
-            const id = StageService.getIdByLocaleStageNumber(localeStageNumber);
-            if(id == null){
-                continue;
-            }
+        ids.forEach(id => {
             const stage = this.getStageById(id)
             if(stage == null){
-                continue;
+                return;
             }
             stages.push(stage);
-        }
+        })
         return stages;
     }
 
     getStageById(id: number): Stage | null {
         const localeStageNumber = StageService.getLocaleStageNumberById(id)
         if(localeStageNumber == null){
-            return null;
-        }
-        const token = `tokSS_Stage${intTo3CharString(localeStageNumber)}`
-        const stageName = this.gameRepository.getLocaleValueByToken(token)
-        if(stageName == null){
-            return null
-        }
-        return {
-            id,
-            name: stageName,
-        }
-    }
-
-    private getStageByLocaleStageNumber(localeStageNumber: number): Stage | null {
-        const id = StageService.getIdByLocaleStageNumber(localeStageNumber)
-        if(id == null){
             return null;
         }
         const token = `tokSS_Stage${intTo3CharString(localeStageNumber)}`
@@ -76,11 +56,13 @@ export class StageService implements StageGateway {
         return vanillaRallyIndex * 6 + vanillaRallyStageIndex
     }
     
-    private static getIdByLocaleStageNumber(localeStageNumber: number): number | null {
-        const indexInRally = localeStageNumber % 6
-        const vanillaRallyIndex = (localeStageNumber - indexInRally) / 6
-        const rallyIdByVanillaRallyIndex = [4, 6, 3, 7, 5, 2]
-        return 10 * rallyIdByVanillaRallyIndex[vanillaRallyIndex] + indexInRally+ 1
+    private static getVanillaIds(): number[]{
+        const ids: number[] = [];
+        [4, 6, 3, 7, 5, 2].forEach(vanillaIdRallyDigit => {
+            [1, 2, 3, 4, 5, 6].forEach(vanillaIdLastDigit => {
+                ids.push(vanillaIdRallyDigit * 10 + vanillaIdLastDigit)
+            })
+        })
+        return ids;
     }
-
 }

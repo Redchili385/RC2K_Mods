@@ -3,6 +3,11 @@ import { GameRepository } from "../game/GameRepository"
 import { Rally } from "@/core/entity/Rally"
 import { notEmpty } from "@/util/functions/notNull"
 
+interface VanillaInfo {
+    localeToken: string,
+    vanillaStageIdDividedBy10: number
+}
+
 export class RallyService implements RallyGateway {
 
     readonly gameRepository: GameRepository
@@ -12,16 +17,15 @@ export class RallyService implements RallyGateway {
     }
 
     getRallyById(id: number): Rally | null {
-        const rallyLocaleId = RallyService.getRallyLocaleIdById(id);
-        if(rallyLocaleId == null){
+        const vanillaInfo = RallyService.getVanillaInfoById(id);
+        if(vanillaInfo == null){
             return null;
         }
-        const token = `tokRT_Champ${rallyLocaleId}`
+        const token = `tokRT_Champ${vanillaInfo.localeToken}`
+        const stageIds = RallyService.getVanillaStageIdsFromVanillaStageIdDividedBy10(
+            vanillaInfo.vanillaStageIdDividedBy10
+        )
         const rallyName = this.gameRepository.getLocaleValueByToken(token)
-        const stageIds = RallyService.getVanillaStageIdsById(id)
-        if(stageIds == null){
-            return null;
-        }
         if(rallyName == null){
             return null;
         }
@@ -36,19 +40,21 @@ export class RallyService implements RallyGateway {
         return [0, 1, 2, 3, 4, 5].map(rallyId => this.getRallyById(rallyId)).filter(notEmpty)
     }
 
-    private static getRallyLocaleIdById(id: number): string | null {
-        const rallyLocaleIdById = ["One", "Two", "Three", "Four", "Five", "Six"]
-        return rallyLocaleIdById[id] ?? null
+    private static getVanillaInfoById(id: number): VanillaInfo | null {
+        const vanillaInfoArr: VanillaInfo[] = [
+            { localeToken: "One",   vanillaStageIdDividedBy10: 4},
+            { localeToken: "Two",   vanillaStageIdDividedBy10: 6},
+            { localeToken: "Three", vanillaStageIdDividedBy10: 3},
+            { localeToken: "Four",  vanillaStageIdDividedBy10: 7},
+            { localeToken: "Five",  vanillaStageIdDividedBy10: 5},
+            { localeToken: "Six",   vanillaStageIdDividedBy10: 2},
+        ]
+        return vanillaInfoArr[id] ?? null
     }
 
-    private static getVanillaStageIdsById(id: number): number[] | null{
-        const vanillaStageIdDividedBy10ById = [4, 6, 3, 7, 5, 2]
-        const vanillaStageIdDividedBy10 = vanillaStageIdDividedBy10ById[id]
-        if(vanillaStageIdDividedBy10 == null){
-            return null
-        }
+    private static getVanillaStageIdsFromVanillaStageIdDividedBy10(vanillaStageIdDividedBy10: number): number[] {
         const vanillaFirstStageId = 10 * vanillaStageIdDividedBy10
-        return [0, 1, 2, 3, 4, 5].map(stageIndex => vanillaFirstStageId + stageIndex)
+        return [0, 1, 2, 3, 4, 5].map(stageIndex => vanillaFirstStageId + stageIndex + 1)
     }
 
 }
