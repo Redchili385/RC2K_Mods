@@ -1,7 +1,7 @@
 import { Stage } from "@/core/entity/Stage";
 import { StageGateway } from "@/core/gateway/StageGateway";
 import { GameRepository } from "../game/GameRepository";
-import { intTo3CharString } from "@/util/auxiliarFunctions";
+import { intTo3CharString } from "@/util/function/intTo3CharString";
 
 export class StageService implements StageGateway {
 

@@ -1,5 +1,4 @@
 import { DefaultGameRepository, GameRepository } from "@/providers/game/GameRepository"
-import { stringToUtf8ByteArray } from "@/util/auxiliarFunctions"
 
 describe("GameRepository", () => {
 
@@ -84,8 +83,8 @@ describe("GameRepository", () => {
 
         it("should get the ASCII representation of the string on the desired location and length", () => {
             //Given
-            const expectedString = "xyz"
-            const expectedStringBytes = stringToUtf8ByteArray(expectedString)
+            const expectedString = "L21"
+            const expectedStringBytes = new Uint8Array([0x4C, 0x32, 0x31])
             const exe = new Uint8Array([1, 0, 0, 0])
             exe.set(expectedStringBytes, 1)
             const gameRepository: GameRepository = new DefaultGameRepository(exe, "")
@@ -99,8 +98,8 @@ describe("GameRepository", () => {
 
         it("should get the available string even though the length requested is not fullified", () => {
             //Given
-            const expectedString = "xyz"
-            const expectedStringBytes = stringToUtf8ByteArray(expectedString)
+            const expectedString = "L21"
+            const expectedStringBytes = new Uint8Array([0x4C, 0x32, 0x31])
             const exe = new Uint8Array([1, 0, 0, 0])
             exe.set(expectedStringBytes, 1)
             const gameRepository: GameRepository = new DefaultGameRepository(exe, "")
@@ -114,8 +113,8 @@ describe("GameRepository", () => {
 
         it("should return an empty string if the index is out of bounds of the exe", () => {
             //Given
-            const insertedString = "xyz"
-            const stringBytes = stringToUtf8ByteArray(insertedString)
+            const insertedString = "L21"
+            const stringBytes = new Uint8Array([0x4C, 0x32, 0x31])
             const exe = new Uint8Array([1, 0, 0, 0])
             exe.set(stringBytes, 1)
             const gameRepository: GameRepository = new DefaultGameRepository(exe, "")

@@ -1,7 +1,7 @@
 import { RallyGateway } from "@/core/gateway/RallyGateway"
 import { GameRepository } from "../game/GameRepository"
 import { Rally } from "@/core/entity/Rally"
-import { notEmpty } from "@/util/functions/notNull"
+import { notEmpty } from "@/util/function/notNull"
 
 interface VanillaInfo {
     localeToken: string,

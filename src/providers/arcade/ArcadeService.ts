@@ -1,8 +1,8 @@
 import { Arcade } from "@/core/entity/Arcade";
 import { ArcadeGateway } from "@/core/gateway/ArcadeGateway";
 import { GameRepository } from "../game/GameRepository";
-import { notEmpty } from "@/util/functions/notNull";
-import { intTo3CharString, stringToUtf8ByteArray, utf8ByteArrayToString } from "@/util/auxiliarFunctions";
+import { notEmpty } from "@/util/function/notNull";
+import { intTo3CharString } from "@/util/function/intTo3CharString";
 
 export interface ArcadeServiceInput{
     gameRepository: GameRepository

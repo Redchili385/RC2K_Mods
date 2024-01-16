@@ -1,4 +1,4 @@
-import { captureFirstGroup, stringToUtf8ByteArray, utf8ByteArrayToString } from "@/util/auxiliarFunctions"
+import { captureFirstGroup } from "@/util/function/captureFirstGroup"
 
 export interface GameRepository {
     getExe(): Uint8Array
@@ -37,10 +37,10 @@ export class DefaultGameRepository implements GameRepository {
 
     getStringFromExe(index: number, length: number): string {
         const slicedExe = this.exe.subarray(index, index + length)
-        return utf8ByteArrayToString(slicedExe)
+        return Buffer.from(slicedExe).toString('ascii')
     }
     setStringOnExe(index: number, string: string): void {
-        const stringBytes = stringToUtf8ByteArray(string);
+        const stringBytes = new Uint8Array(Buffer.from(string, 'ascii'));
         const maximumStringBytesLength = this.exe.length - index
         this.exe.set(stringBytes.slice(0, maximumStringBytesLength), index)
     }

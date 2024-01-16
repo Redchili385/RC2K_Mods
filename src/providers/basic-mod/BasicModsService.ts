@@ -18,7 +18,7 @@ export class BasicModService implements BasicModGateway{
     constructor(gameRepository: GameRepository){
         this.coreBasicMods = new Map<string, CoreBasicMod>();
         this.byteManipulator = {
-            getByte: (index: number) => gameRepository.getByte(index),
+            getByte: (index: number) => gameRepository.getByte(index) ?? 0,  //TODO: Think about the null case
             setByte: (index: number, value: number) => gameRepository.setByte(index, value)
         }
         this.fillBasicMods()

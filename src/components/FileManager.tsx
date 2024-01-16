@@ -18,6 +18,9 @@ export default function FileManager(){
         return
       }
       const selectedFile = files[0]
+      if(selectedFile == null){
+        return
+      }
       setFileName(selectedFile.name);
       reader.onload = function() {
         const arrayBuffer = this.result as ArrayBuffer; 
