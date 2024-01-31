@@ -9,6 +9,9 @@ import NoCD from "./implementation/NoCD"
 import ParticleGuruFix from "./implementation/ParticleGuruFix"
 import RegistryFix from "./implementation/RegistryFix"
 import { BasicModGateway } from "@/core/gateway/BasicModGateway"
+import InsaneBots from "./implementation/InsaneBots"
+import { BotControlsPlayer } from "./implementation/BotControlsPlayer"
+import { TimeTenTimesFaster } from "./implementation/TimeTenTimesFaster"
 
 export class BasicModService implements BasicModGateway{
 
@@ -61,6 +64,9 @@ export class BasicModService implements BasicModGateway{
         this.coreBasicMods.set("Particle Guru Fix", new ParticleGuruFix(this.byteManipulator));
         this.coreBasicMods.set("Fast Loading Screen", new FastLoading(this.byteManipulator));
         this.coreBasicMods.set("Extended Camera Modes", new ExtendedCameraModes(this.byteManipulator));
+        this.coreBasicMods.set("Insane Bots", new InsaneBots(this.byteManipulator))
+        this.coreBasicMods.set("Bot Controls Player", new BotControlsPlayer(this.byteManipulator))
+        this.coreBasicMods.set("Time 10x faster", new TimeTenTimesFaster(this.byteManipulator))
     }
 
 }
