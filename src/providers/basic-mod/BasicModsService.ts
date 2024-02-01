@@ -12,6 +12,7 @@ import { BasicModGateway } from "@/core/gateway/BasicModGateway"
 import InsaneBots from "./implementation/InsaneBots"
 import { BotControlsPlayer } from "./implementation/BotControlsPlayer"
 import { TimeTenTimesFaster } from "./implementation/TimeTenTimesFaster"
+import { ImprovedResetCar } from "./implementation/ImprovedResetCar"
 
 export class BasicModService implements BasicModGateway{
 
@@ -67,6 +68,7 @@ export class BasicModService implements BasicModGateway{
         this.coreBasicMods.set("Insane Bots", new InsaneBots(this.byteManipulator))
         this.coreBasicMods.set("Bot Controls Player", new BotControlsPlayer(this.byteManipulator))
         this.coreBasicMods.set("Time 10x faster", new TimeTenTimesFaster(this.byteManipulator))
+        this.coreBasicMods.set("Improved Reset Car", new ImprovedResetCar(this.byteManipulator))
     }
 
 }
