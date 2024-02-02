@@ -32,7 +32,6 @@ export default class InsaneBots implements CoreBasicMod {
             this.getByte(0x61C4D) == 0x00 &&
             this.getByte(0x61C4E) == 0x00 &&
             this.getByte(0x61C4F) == 0x00 &&
-            this.getByte(0x3E3F0) == 0x70 && //Reset Car "valid track position" to "track position"
             this.getByte(0x36BAF) == 0x90 && //Maxing out BotStrength calculation.
             this.getByte(0x6263C) == 0x8B && //Changing reversing logic to use absolute doublePlaneSpeed less than to 2
             this.getByte(0x6263D) == 0x05 &&
@@ -82,7 +81,6 @@ export default class InsaneBots implements CoreBasicMod {
         this.setByte(0x61C4D, 0x00)
         this.setByte(0x61C4E, 0x00)
         this.setByte(0x61C4F, 0x00)
-        this.setByte(0x3E3F0, 0x70)
         this.setByte(0x36BAF, 0x90)
         this.setByte(0x6263C, 0x8B)
         this.setByte(0x6263D, 0x05)
@@ -116,7 +114,6 @@ export default class InsaneBots implements CoreBasicMod {
         this.setByte(0x61C4D, 0x00)
         this.setByte(0x61C4E, 0x00)
         this.setByte(0x61C4F, 0x00)
-        this.setByte(0x3E3F0, 0x6C)
         this.setByte(0x36BAF, 0x38)
         this.setByte(0x6263C, 0xA3)
         this.setByte(0x6263D, 0xF8)

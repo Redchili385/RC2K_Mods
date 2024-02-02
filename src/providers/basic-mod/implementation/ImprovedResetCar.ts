@@ -18,12 +18,12 @@ export class ImprovedResetCar implements CoreBasicMod{
     }
 
     checkEnabled(): boolean{
-        this.newBinaryFunction.forEach((value, index) => {
-            if(this.getByte(0x3E3EF + index) != value){
+        for(let index = 0; index < this.newBinaryFunction.length; index++){
+            if(this.getByte(0x3E3EF + index) != this.newBinaryFunction[index]){
                 return false
             }
-        })
-        return this.getByte(0x3E4E5) == 0x01 && this.getByte(0x3E4E6) == 0x74;
+        }
+        return this.getByte(0x3E4E5) == 0x00 && this.getByte(0x3E4E6) == 0x74 && this.getByte(0x3E506) == 0x98;
     }
 
     setEnabled(value: boolean){
@@ -42,8 +42,9 @@ export class ImprovedResetCar implements CoreBasicMod{
         this.newBinaryFunction.forEach((value, index) => {
             this.setByte(0x3E3EF + index, value)
         })
-        this.setByte(0x3E4E5, 0x01)
+        this.setByte(0x3E4E5, 0x00)
         this.setByte(0x3E4E6, 0x74)
+        this.setByte(0x3E506, 0x98)
     }
 
     private disable(){
@@ -52,6 +53,7 @@ export class ImprovedResetCar implements CoreBasicMod{
         })
         this.setByte(0x3E4E5, 0x02)
         this.setByte(0x3E4E6, 0x75)
+        this.setByte(0x3E506, 0x94)
     }
 
 }
