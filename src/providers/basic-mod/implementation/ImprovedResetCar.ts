@@ -23,7 +23,7 @@ export class ImprovedResetCar implements CoreBasicMod{
                 return false
             }
         }
-        return this.getByte(0x3E4E5) == 0x00 && this.getByte(0x3E4E6) == 0x74 && this.getByte(0x3E506) == 0x98;
+        return this.getByte(0x3E4E5) == 0x00 && this.getByte(0x3E4E6) == 0x74;
     }
 
     setEnabled(value: boolean){
@@ -42,9 +42,8 @@ export class ImprovedResetCar implements CoreBasicMod{
         this.newBinaryFunction.forEach((value, index) => {
             this.setByte(0x3E3EF + index, value)
         })
-        this.setByte(0x3E4E5, 0x00)
+        this.setByte(0x3E4E5, 0x00)  //Control Type to Allow Bots and Players
         this.setByte(0x3E4E6, 0x74)
-        this.setByte(0x3E506, 0x98)
     }
 
     private disable(){
@@ -53,7 +52,6 @@ export class ImprovedResetCar implements CoreBasicMod{
         })
         this.setByte(0x3E4E5, 0x02)
         this.setByte(0x3E4E6, 0x75)
-        this.setByte(0x3E506, 0x94)
     }
 
 }

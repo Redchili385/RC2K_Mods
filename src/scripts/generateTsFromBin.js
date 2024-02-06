@@ -1,10 +1,11 @@
 const fs = require("node:fs")
+const { globSync } = require("glob")
 
-const filenames = ["resetCar.bin", "resetCarV2.bin"]
-const folder = "./src/asm/mods/resetCar"
-
-filenames.forEach(filename => {
-    const path = `${folder}/${filename}`
+const paths = globSync('**/src/asm/**/*.bin', {})
+paths.forEach(path => {
+    const pathArray = path.split("\\")
+    const folder = pathArray.slice(0, -1).join("\\")
+    const filename = pathArray[pathArray.length - 1]
     const data = fs.readFileSync(path)
     const stringBytes = []
     new Uint8Array(data).forEach(byte => {

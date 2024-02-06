@@ -3,11 +3,11 @@ org 43EFEFh
 
 resetCar:
     pusha
-    mov eax,[0x71a070]  ;Use currentPlayer.trackPosition instead of validTrackPosition 
+    mov eax,[0x71a06C]  ;currentPlayer.validTrackPosition
     mov [0x6365e4], eax ;Update currentCarTrackPosition
     mov eax,[dword 0x71b3F8]
     mov dword [0x4 * eax + 0x71BFA8], 0x0  ; => zero bot reverse gear counter
-    mov ebx, [0x4 * eax + 0x71B3B8]   ;PlayerConfigAddresses, EBX = currentPlayerAddress
+    mov ecx, [0x4 * eax + 0x71B3B8]   ;PlayerConfigAddresses, ECX = currentPlayerAddress
     mov dword [dword 0x614c4c],0x0  ;OffsetFromIdealResetTrackPosition?
 
 resetCarInnerLoop:
@@ -18,12 +18,12 @@ resetCarInnerLoop:
 
 resetCarInnerLoopInner:
     add esi, 0xFE0
-    cmp ebx, esi     ;currentPlayerIndex
+    cmp ecx, esi     ;currentPlayerIndex
     je short resetCarInnerLoopInner ;Jump if the player to be compared is the same
-    call 0x43f0df
+    call 0x43f0df   ;EAX and EBX modified here
     jc short resetCarInnerLoop2  ;Jump if its a dangerous position
     cmp esi, 0x71630c
-    ja short resetCarInnerLoopInner ;Jump to check other cars
+    jbe short resetCarInnerLoopInner ;Jump to check other cars
     jmp short finishingResetCar ;Safe position to reset
 
 resetCarInnerLoop2:
@@ -35,12 +35,12 @@ resetCarInnerLoop2:
 
 resetCarInnerLoop2Inner:
     add esi, 0xFE0
-    cmp ebx, esi 
+    cmp ecx, esi 
     je short resetCarInnerLoop2Inner
     call 0x43f0df
     jc short resetCarInnerLoop3
     cmp esi, 0x71630c
-    ja short resetCarInnerLoop2Inner
+    jbe short resetCarInnerLoop2Inner
     jmp short finishingResetCar
 
 resetCarInnerLoop3:

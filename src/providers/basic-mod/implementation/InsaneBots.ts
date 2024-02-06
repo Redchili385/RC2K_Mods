@@ -1,17 +1,29 @@
 import { ByteManipulator } from "../ByteManipulator";
 import { CoreBasicMod } from "../CoreBasicMod";
+import createBotCar from "../../../asm/mods/createBotCar/createBotCar"
+import createBotCarV2 from "../../../asm/mods/createBotCar/createBotCarV2"
 
 export default class InsaneBots implements CoreBasicMod {
 
     private readonly getByte: (index: number) => number
     private readonly setByte: (index: number, value: number) => void
+    private readonly baseAddress = 0x400C00  //.text section
+    private readonly createBotCar: Uint8Array
+    private readonly createBotCarV2: Uint8Array
 
     constructor(byteManipulator: ByteManipulator){
         this.getByte = byteManipulator.getByte
         this.setByte = byteManipulator.setByte
+        this.createBotCar = createBotCar
+        this.createBotCarV2 = createBotCarV2
     }
 
     checkEnabled(): boolean{
+        for(let index = 0; index < this.createBotCarV2.length; index++){  //Give bots the right number of completed squares on spawn
+            if(this.getByte(0x437613 - this.baseAddress + index) != this.createBotCarV2[index]){
+                return false
+            }
+        }
         if(
             this.getByte(0x3E3C1) == 0x90 &&  //Allow Bots to reset car automatically after turning over
             this.getByte(0x3E3C2) == 0x90 &&
@@ -55,7 +67,36 @@ export default class InsaneBots implements CoreBasicMod {
             this.getByte(0x3B6C1) == 0x90 &&
             this.getByte(0x3B6C2) == 0x90 &&
             this.getByte(0x3B6C3) == 0x90 &&
-            this.getByte(0x3B6C4) == 0x90
+            this.getByte(0x3B6C4) == 0x90 &&
+
+            this.getByte(0x46289E - this.baseAddress) == 0x6C &&  //Make bot go to the next valid position to prevent invalid cutting
+            this.getByte(0x462935 - this.baseAddress) == 0x6C &&
+            this.getByte(0x462BC8 - this.baseAddress) == 0x6C &&
+            this.getByte(0x462BF2 - this.baseAddress) == 0x6C &&
+            this.getByte(0x462C17 - this.baseAddress) == 0x6C &&
+            this.getByte(0x462C6F - this.baseAddress) == 0x6C &&
+            this.getByte(0x462D6A - this.baseAddress) == 0x6C &&
+            this.getByte(0x462D86 - this.baseAddress) == 0x6C &&
+
+            this.getByte(0x437185 - this.baseAddress) == 0x94 &&  //Handle bot creation using new validTrackPosition to not spawn bots on the other side on invalid shortcuts
+            this.getByte(0x43718B - this.baseAddress) == 0x80 &&
+            this.getByte(0x43719C - this.baseAddress) == 0x80 &&
+            this.getByte(0x437268 - this.baseAddress) == 0x80 &&
+            this.getByte(0x43726E - this.baseAddress) == 0x94 &&
+            this.getByte(0x43727F - this.baseAddress) == 0x80 &&
+            this.getByte(0x43733A - this.baseAddress) == 0x80 &&
+            this.getByte(0x437353 - this.baseAddress) == 0x94 &&
+            this.getByte(0x43737F - this.baseAddress) == 0x94 &&
+            this.getByte(0x4373A6 - this.baseAddress) == 0x94 &&
+            this.getByte(0x4373AC - this.baseAddress) == 0x80 &&
+            this.getByte(0x4373C2 - this.baseAddress) == 0x80 &&
+            this.getByte(0x4373C8 - this.baseAddress) == 0x94 &&
+            this.getByte(0x43752A - this.baseAddress) == 0x94 &&
+            this.getByte(0x437530 - this.baseAddress) == 0x94 &&
+            this.getByte(0x4375FD - this.baseAddress) == 0x94 &&
+            this.getByte(0x437632 - this.baseAddress) == 0x80 &&
+            this.getByte(0x43773E - this.baseAddress) == 0x6C &&
+            this.getByte(0x437744 - this.baseAddress) == 0x80
         ){
             return true;
         }
@@ -75,6 +116,10 @@ export default class InsaneBots implements CoreBasicMod {
     }
 
     private enable(){
+        this.createBotCarV2.forEach((value, index) => {
+            this.setByte(0x437613 - this.baseAddress + index, value)
+        })
+
         this.setByte(0x3E3C1, 0x90)
         this.setByte(0x3E3C2, 0x90)
 
@@ -118,9 +163,42 @@ export default class InsaneBots implements CoreBasicMod {
         this.setByte(0x3B6C2, 0x90)
         this.setByte(0x3B6C3, 0x90)
         this.setByte(0x3B6C4, 0x90)
+
+        this.setByte(0x46289E - this.baseAddress, 0x6C)
+        this.setByte(0x462935 - this.baseAddress, 0x6C)
+        this.setByte(0x462BC8 - this.baseAddress, 0x6C)
+        this.setByte(0x462BF2 - this.baseAddress, 0x6C)
+        this.setByte(0x462C17 - this.baseAddress, 0x6C)
+        this.setByte(0x462C6F - this.baseAddress, 0x6C)
+        this.setByte(0x462D6A - this.baseAddress, 0x6C)
+        this.setByte(0x462D86 - this.baseAddress, 0x6C)
+
+        this.setByte(0x437185 - this.baseAddress, 0x94)  //Handle bot creation using new validTrackPosition to not spawn bots on the other side on invalid shortcuts
+        this.setByte(0x43718B - this.baseAddress, 0x80)
+        this.setByte(0x43719C - this.baseAddress, 0x80)
+        this.setByte(0x437268 - this.baseAddress, 0x80)
+        this.setByte(0x43726E - this.baseAddress, 0x94)
+        this.setByte(0x43727F - this.baseAddress, 0x80)
+        this.setByte(0x43733A - this.baseAddress, 0x80)
+        this.setByte(0x437353 - this.baseAddress, 0x94)
+        this.setByte(0x43737F - this.baseAddress, 0x94)
+        this.setByte(0x4373A6 - this.baseAddress, 0x94)
+        this.setByte(0x4373AC - this.baseAddress, 0x80)
+        this.setByte(0x4373C2 - this.baseAddress, 0x80)
+        this.setByte(0x4373C8 - this.baseAddress, 0x94)
+        this.setByte(0x43752A - this.baseAddress, 0x94)
+        this.setByte(0x437530 - this.baseAddress, 0x94)
+        this.setByte(0x4375FD - this.baseAddress, 0x94)
+        this.setByte(0x437632 - this.baseAddress, 0x80)
+        this.setByte(0x43773E - this.baseAddress, 0x6C)
+        this.setByte(0x437744 - this.baseAddress, 0x80)
     }
 
     private disable(){
+        this.createBotCar.forEach((value, index) => {
+            this.setByte(0x437613 - this.baseAddress + index, value)
+        })
+
         this.setByte(0x3E3C1, 0x74)
         this.setByte(0x3E3C2, 0x21)
 
@@ -164,6 +242,35 @@ export default class InsaneBots implements CoreBasicMod {
         this.setByte(0x3B6C2, 0x01)
         this.setByte(0x3B6C3, 0x00)
         this.setByte(0x3B6C4, 0x00)
+
+        this.setByte(0x46289E - this.baseAddress, 0x70)
+        this.setByte(0x462935 - this.baseAddress, 0x70)
+        this.setByte(0x462BC8 - this.baseAddress, 0x70)
+        this.setByte(0x462BF2 - this.baseAddress, 0x70)
+        this.setByte(0x462C17 - this.baseAddress, 0x70)
+        this.setByte(0x462C6F - this.baseAddress, 0x70)
+        this.setByte(0x462D6A - this.baseAddress, 0x70)
+        this.setByte(0x462D86 - this.baseAddress, 0x70)
+
+        this.setByte(0x437185 - this.baseAddress, 0x98)  //Handle bot creation using new validTrackPosition to not spawn bots on the other side on invalid shortcuts
+        this.setByte(0x43718B - this.baseAddress, 0x84)
+        this.setByte(0x43719C - this.baseAddress, 0x84)
+        this.setByte(0x437268 - this.baseAddress, 0x84)
+        this.setByte(0x43726E - this.baseAddress, 0x98)
+        this.setByte(0x43727F - this.baseAddress, 0x84)
+        this.setByte(0x43733A - this.baseAddress, 0x84)
+        this.setByte(0x437353 - this.baseAddress, 0x98)
+        this.setByte(0x43737F - this.baseAddress, 0x98)
+        this.setByte(0x4373A6 - this.baseAddress, 0x98)
+        this.setByte(0x4373AC - this.baseAddress, 0x84)
+        this.setByte(0x4373C2 - this.baseAddress, 0x84)
+        this.setByte(0x4373C8 - this.baseAddress, 0x98)
+        this.setByte(0x43752A - this.baseAddress, 0x98)
+        this.setByte(0x437530 - this.baseAddress, 0x98)
+        this.setByte(0x4375FD - this.baseAddress, 0x98)
+        this.setByte(0x437632 - this.baseAddress, 0x84)
+        this.setByte(0x43773E - this.baseAddress, 0x70)
+        this.setByte(0x437744 - this.baseAddress, 0x84)  
     }
 
 }
