@@ -1,7 +1,7 @@
 import { ByteManipulator } from "../ByteManipulator";
 import { CoreBasicMod } from "../CoreBasicMod";
 
-export class TimeTenTimesFaster implements CoreBasicMod{
+export class TimeHundredTimesFaster implements CoreBasicMod{
 
     private readonly getByte: (index: number) => number
     private readonly setByte: (index: number, value: number) => void
@@ -14,10 +14,10 @@ export class TimeTenTimesFaster implements CoreBasicMod{
 
     checkEnabled(): boolean{
         if(
-            this.getByte(0x445599 - this.baseAddress) == 0x90 &&  //Tick jumping removed
-            this.getByte(0x44559A - this.baseAddress) == 0x90 &&
-            this.getByte(0x4455A0 - this.baseAddress) == 0x90 &&
-            this.getByte(0x4455A1 - this.baseAddress) == 0x90
+            this.getByte(0x445599 - this.baseAddress) == 0xF7 &&  //Tick jumping removed
+            this.getByte(0x44559A - this.baseAddress) == 0xE3 &&
+            this.getByte(0x4455A0 - this.baseAddress) == 0xF7 &&
+            this.getByte(0x4455A1 - this.baseAddress) == 0xF3
         ){
             return true;
         }
@@ -37,10 +37,10 @@ export class TimeTenTimesFaster implements CoreBasicMod{
     }
 
     private enable(){
-        this.setByte(0x445599 - this.baseAddress, 0x90)
-        this.setByte(0x44559A - this.baseAddress, 0x90)
-        this.setByte(0x4455A0 - this.baseAddress, 0x90)
-        this.setByte(0x4455A1 - this.baseAddress, 0x90)
+        this.setByte(0x445599 - this.baseAddress, 0xF7)
+        this.setByte(0x44559A - this.baseAddress, 0xE3)
+        this.setByte(0x4455A0 - this.baseAddress, 0xF7)
+        this.setByte(0x4455A1 - this.baseAddress, 0xF3)
     }
 
     private disable(){

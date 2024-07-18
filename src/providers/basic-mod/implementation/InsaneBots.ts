@@ -31,9 +31,12 @@ export default class InsaneBots implements CoreBasicMod {
             this.getByte(0x6210C) == 0x90 &&  //Removing the desiredDoublePlaneSpeed calculation condition
             this.getByte(0x6210D) == 0x90 &&
 
-            this.getByte(0x62115) == 0x0D &&  //Removing the sub and multiplying the botStrength by constant float 2.5
-            this.getByte(0x62116) == 0x28 &&
-            this.getByte(0x62117) == 0x10 &&
+            this.getByte(0x62114) == 0x90 &&   //Removing the sub
+            this.getByte(0x62115) == 0x90 &&  
+            this.getByte(0x62116) == 0x90 &&
+            this.getByte(0x62117) == 0x90 &&
+            this.getByte(0x62118) == 0x90 &&
+            this.getByte(0x62119) == 0x90 &&
 
             this.getByte(0x2032CA) == 0x00 &&  //Changing the bias of the bot desired speed linear function to 0
             this.getByte(0x2032CB) == 0x00 &&
@@ -126,9 +129,12 @@ export default class InsaneBots implements CoreBasicMod {
         this.setByte(0x6210C, 0x90)
         this.setByte(0x6210D, 0x90)
 
-        this.setByte(0x62115, 0x0D)
-        this.setByte(0x62116, 0x28)
-        this.setByte(0x62117, 0x10)
+        this.setByte(0x62114, 0x90)
+        this.setByte(0x62115, 0x90)
+        this.setByte(0x62116, 0x90)
+        this.setByte(0x62117, 0x90)
+        this.setByte(0x62118, 0x90)
+        this.setByte(0x62119, 0x90)
 
         this.setByte(0x2032CA, 0x00)
         this.setByte(0x2032CB, 0x00)
@@ -205,9 +211,12 @@ export default class InsaneBots implements CoreBasicMod {
         this.setByte(0x6210C, 0x72)
         this.setByte(0x6210D, 0x1E)
 
+        this.setByte(0x62114, 0xD8)
         this.setByte(0x62115, 0x25)
         this.setByte(0x62116, 0xC8)
         this.setByte(0x62117, 0x4E)
+        this.setByte(0x62118, 0x60)
+        this.setByte(0x62119, 0x00)
 
         this.setByte(0x2032CA, 0xF0)
         this.setByte(0x2032CB, 0x41)
