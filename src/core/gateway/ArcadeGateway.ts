@@ -1,4 +1,5 @@
 import { Arcade } from "../entity/Arcade";
+import { ArcadeStage } from "../entity/ArcadeStage";
 
 export interface ArcadeGateway{
 

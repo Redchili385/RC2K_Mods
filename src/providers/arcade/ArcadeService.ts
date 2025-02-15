@@ -3,6 +3,7 @@ import { ArcadeGateway } from "@/core/gateway/ArcadeGateway";
 import { GameRepository } from "../game/GameRepository";
 import { notEmpty } from "@/util/function/notNull";
 import { intTo3CharString } from "@/util/function/intTo3CharString";
+import { ArcadeStage } from "@/core/entity/ArcadeStage";
 
 export interface ArcadeServiceInput{
     gameRepository: GameRepository

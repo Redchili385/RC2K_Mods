@@ -1,3 +1,4 @@
+import { ArcadeStage } from "@/core/entity/ArcadeStage"
 import { ArcadeGateway } from "@/core/gateway/ArcadeGateway"
 import { StageGateway } from "@/core/gateway/StageGateway"
 import { GetArcadeStages } from "@/core/usecase/GetArcadeStages"

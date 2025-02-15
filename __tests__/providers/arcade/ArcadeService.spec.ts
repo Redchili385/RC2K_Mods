@@ -1,4 +1,5 @@
 import { Arcade } from "@/core/entity/Arcade"
+import { ArcadeStage } from "@/core/entity/ArcadeStage"
 import { ArcadeGateway } from "@/core/gateway/ArcadeGateway"
 import { ArcadeService, ArcadeServiceInput } from "@/providers/arcade/ArcadeService"
 import { GameRepository } from "@/providers/game/GameRepository"
