@@ -7,7 +7,7 @@ mov [0x71aa80],eax
 popa
 mov dword [dword 0x71a234],0x2
 
-mov eax,[0x70f484]
+mov eax,[0x70f480] ;Use the player valid track position to calculate the next bot position instead of the track position 
 add eax,ebx
 mov [0x71a070],eax
 mov [0x71a06c],eax

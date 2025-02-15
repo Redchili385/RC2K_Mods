@@ -12,6 +12,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "compile": "tsc",
     "test": "tsc && jest",
     "test:watch": "jest --watch"
   },

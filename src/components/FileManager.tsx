@@ -41,8 +41,9 @@ export default function FileManager(){
         }
     }, [fileBytes])
   
-    function downloadExecutable(bytes: ArrayBuffer){
-        const blob = new Blob([new Uint8Array(bytes)], {type: "octet/stream"});
+    function downloadExecutable(buffer: ArrayBuffer){
+        const bytes = new Uint8Array(buffer)
+        const blob = new Blob([bytes], {type: "octet/stream"});
         const url = window.URL.createObjectURL(blob);
         download(url, fileName)
     }

@@ -15,6 +15,7 @@ import { TimeTenTimesFaster } from "./implementation/TimeTenTimesFaster"
 import { ImprovedResetCar } from "./implementation/ImprovedResetCar"
 import { TimeHundredTimesFaster } from "./implementation/TimeHundredTimesFaster"
 import { NoPauseWhenWindowIsNotFocused } from "./implementation/NoPauseWhenWindowIsNotFocused"
+import MergedBasicMod from "./implementation/MergedBasicMod"
 
 export class BasicModService implements BasicModGateway{
 
@@ -66,12 +67,14 @@ export class BasicModService implements BasicModGateway{
         this.coreBasicMods.set("Registry Fix", new RegistryFix(this.byteManipulator));
         this.coreBasicMods.set("Particle Guru Fix", new ParticleGuruFix(this.byteManipulator));
         this.coreBasicMods.set("Fast Loading Screen", new FastLoading(this.byteManipulator));
+        this.coreBasicMods.set("Insane Bots v0.5.0", new MergedBasicMod([
+            new ImprovedResetCar(this.byteManipulator),
+            new InsaneBots(this.byteManipulator),
+        ])),
         this.coreBasicMods.set("Extended Camera Modes", new ExtendedCameraModes(this.byteManipulator));
-        this.coreBasicMods.set("Insane Bots", new InsaneBots(this.byteManipulator))
         this.coreBasicMods.set("Bot Controls Player", new BotControlsPlayer(this.byteManipulator))
         this.coreBasicMods.set("Time 10x faster", new TimeTenTimesFaster(this.byteManipulator))
         this.coreBasicMods.set("Time 100x faster", new TimeHundredTimesFaster(this.byteManipulator))
-        this.coreBasicMods.set("Improved Reset Car", new ImprovedResetCar(this.byteManipulator))
         this.coreBasicMods.set("No pause when window is not focused", new NoPauseWhenWindowIsNotFocused(this.byteManipulator))
     }
 

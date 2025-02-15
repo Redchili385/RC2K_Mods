@@ -2,20 +2,30 @@ import { ByteManipulator } from "../ByteManipulator";
 import { CoreBasicMod } from "../CoreBasicMod";
 import createBotCar from "../../../asm/mods/createBotCar/createBotCar"
 import createBotCarV2 from "../../../asm/mods/createBotCar/createBotCarV2"
+import { parameters, previousParameters } from "./data/insane-bots/0.5.0"
+import { int32ToBytes } from "@/util/function/int32ToBytes";
+import { int8ToBytes } from "@/util/function/int8ToBytes";
+import { uint8ToBytes } from "@/util/function/uint8ToBytes";
+import { float32ToBytes } from "@/util/function/float32ToBytes";
+import { serializeMap } from "@/util/function/serializeMap";
+import { deserializeNumberMap } from "@/util/function/deserializeNumberMap";
 
 export default class InsaneBots implements CoreBasicMod {
 
     private readonly getByte: (index: number) => number
     private readonly setByte: (index: number, value: number) => void
     private readonly baseAddress = 0x400C00  //.text section
+    private readonly dataBaseAddress = 0x401C00 //.data section
     private readonly createBotCar: Uint8Array
     private readonly createBotCarV2: Uint8Array
+    private readonly previousParameters: Map<number, number>
 
     constructor(byteManipulator: ByteManipulator){
         this.getByte = byteManipulator.getByte
         this.setByte = byteManipulator.setByte
         this.createBotCar = createBotCar
         this.createBotCarV2 = createBotCarV2
+        this.previousParameters = deserializeNumberMap(previousParameters)
     }
 
     checkEnabled(): boolean{
@@ -24,7 +34,7 @@ export default class InsaneBots implements CoreBasicMod {
                 return false
             }
         }
-        if(
+        if ((
             this.getByte(0x3E3C1) == 0x90 &&  //Allow Bots to reset car automatically after turning over
             this.getByte(0x3E3C2) == 0x90 &&
 
@@ -97,13 +107,15 @@ export default class InsaneBots implements CoreBasicMod {
             this.getByte(0x43752A - this.baseAddress) == 0x94 &&
             this.getByte(0x437530 - this.baseAddress) == 0x94 &&
             this.getByte(0x4375FD - this.baseAddress) == 0x94 &&
-            this.getByte(0x437632 - this.baseAddress) == 0x80 &&
             this.getByte(0x43773E - this.baseAddress) == 0x6C &&
             this.getByte(0x437744 - this.baseAddress) == 0x80
-        ){
-            return true;
+        ) == false){
+            return false;
         }
-        return false;
+        if(!this.checkLoadedParameters()){
+            return false
+        }
+        return true
     }
 
     setEnabled(value: boolean){
@@ -111,18 +123,19 @@ export default class InsaneBots implements CoreBasicMod {
         if(isEnabled == value){
             return;
         }
-        if(!value){
-            this.disable()
-            return;
+        if(value){
+            this.enable()
         }
-        this.enable()
+        else{
+            this.disable()
+        }
+        const isEnabledAfter = this.checkEnabled()
+        if(isEnabledAfter != value){
+            console.error("Failed to change Insane Bots to " + value)
+        }
     }
 
     private enable(){
-        this.createBotCarV2.forEach((value, index) => {
-            this.setByte(0x437613 - this.baseAddress + index, value)
-        })
-
         this.setByte(0x3E3C1, 0x90)
         this.setByte(0x3E3C2, 0x90)
 
@@ -195,12 +208,19 @@ export default class InsaneBots implements CoreBasicMod {
         this.setByte(0x43752A - this.baseAddress, 0x94)
         this.setByte(0x437530 - this.baseAddress, 0x94)
         this.setByte(0x4375FD - this.baseAddress, 0x94)
-        this.setByte(0x437632 - this.baseAddress, 0x80)
         this.setByte(0x43773E - this.baseAddress, 0x6C)
         this.setByte(0x437744 - this.baseAddress, 0x80)
+
+        this.createBotCarV2.forEach((value, index) => {
+            this.setByte(0x437613 - this.baseAddress + index, value)
+        })
+
+        this.loadParameters()
     }
 
     private disable(){
+        this.restoreParameters()
+
         this.createBotCar.forEach((value, index) => {
             this.setByte(0x437613 - this.baseAddress + index, value)
         })
@@ -277,9 +297,105 @@ export default class InsaneBots implements CoreBasicMod {
         this.setByte(0x43752A - this.baseAddress, 0x98)
         this.setByte(0x437530 - this.baseAddress, 0x98)
         this.setByte(0x4375FD - this.baseAddress, 0x98)
-        this.setByte(0x437632 - this.baseAddress, 0x84)
         this.setByte(0x43773E - this.baseAddress, 0x70)
-        this.setByte(0x437744 - this.baseAddress, 0x84)  
+        this.setByte(0x437744 - this.baseAddress, 0x84)
     }
 
+    private loadParameters(){
+        for(const address_key in parameters){
+            const address_key_split_arr = address_key.split("_")
+            const address_str = address_key_split_arr[0]
+            const datatype_str = address_key_split_arr[1]
+            if(!address_str || !datatype_str){
+                throw new Error("Invalid address key: " + address_key)
+            }
+            const address = this.processToFileAddress(parseInt(address_str))
+            let value = parameters[address_key as keyof typeof parameters]
+            let bytes_to_change: number[] = []
+            if(datatype_str == "int32"){
+                value = this.alignSpecialInt32Values(value)
+                bytes_to_change = int32ToBytes(value)
+            }
+            if(datatype_str == "int8"){
+                bytes_to_change = int8ToBytes(value)
+            }
+            if(datatype_str == "uint8"){
+                bytes_to_change = uint8ToBytes(value)
+            }
+            if(datatype_str == "float32"){
+                bytes_to_change = float32ToBytes(value)
+            }
+            for(let index = 0; index < bytes_to_change.length; index++){
+                this.previousParameters.set(address + index, this.getByte(address + index))
+                this.setByte(address + index, bytes_to_change[index]!)
+            }
+        }
+    }
+
+    private checkLoadedParameters(){
+        for(const address_key in parameters){
+            const address_key_split_arr = address_key.split("_")
+            const address_str = address_key_split_arr[0]
+            const datatype_str = address_key_split_arr[1]
+            if(!address_str || !datatype_str){
+                throw new Error("Invalid address key: " + address_key)
+            }
+            const address = this.processToFileAddress(parseInt(address_str))
+            let value = parameters[address_key as keyof typeof parameters]
+            let bytes_to_change: number[] = []
+            if(datatype_str == "int32"){
+                value = this.alignSpecialInt32Values(value)
+                bytes_to_change = int32ToBytes(value)
+            }
+            if(datatype_str == "int8"){
+                bytes_to_change = int8ToBytes(value)
+            }
+            if(datatype_str == "uint8"){
+                bytes_to_change = uint8ToBytes(value)
+            }
+            if(datatype_str == "float32"){
+                bytes_to_change = float32ToBytes(value)
+            }
+            for(let index = 0; index < bytes_to_change.length; index++){
+                if(this.getByte(address + index) != bytes_to_change[index]){
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    private restoreParameters(){
+        this.previousParameters.forEach((value, address) => {
+            this.setByte(address, value)
+        })
+    }
+
+    private alignSpecialInt32Values(value: number): number{
+        value = Math.round(value)
+        let baseAddress = 0
+        const trackPolygonsAddress = 0x9e3738
+        const trackPolygonsLength = 5146
+        if(value >= trackPolygonsAddress && value < trackPolygonsAddress + trackPolygonsLength * 4){
+            baseAddress = trackPolygonsAddress
+        }
+        const trackAnglesAddress = 0x9ed800
+        const trackAnglesLength = 5146
+        if(value >= trackAnglesAddress && value < trackAnglesAddress + trackAnglesLength * 4){
+            baseAddress = trackAnglesAddress
+        }
+        if(baseAddress == 0){
+            return value
+        }
+        const offset = value - baseAddress
+        const alignedOffset = Math.floor(offset / 4) * 4
+        return baseAddress + alignedOffset
+    }
+
+    private processToFileAddress(processAddress: number): number{
+        if(processAddress > 0x4e0000){
+            return processAddress - this.dataBaseAddress
+        }
+        return processAddress - this.baseAddress
+    }
 }
